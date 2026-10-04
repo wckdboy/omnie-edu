@@ -254,7 +254,7 @@ Built **solo with AI coding agents**, so phases are **scope-gated, not date-gate
 | **1 · MVP "Snap → Learn → Verify"** | ~3 months | Camera + OCR, hints-first tutor, Truth Engine v1 (CAS + self-consistency + cross-vendor), canvas notebooks with Omnie shapes, 5 providers (Anthropic, OpenAI, Gemini, OpenRouter, Apple FM), TestFlight |
 | **2 · Grounded knowledge** | ~2 months | Search BYOK (Brave, Exa, Tavily, Perplexity, SearXNG), claim splitting, citation verifier, Verification Report UI, evals CI + public scoreboard, Canvas Agent |
 | **3 · Explore** | ~3 months | Worlds (World Labs Marble → Atlas), MetalSplatter viewer, atlas globe, practice + mastery map, voice tutor |
-| **4 · v1.0 App Store** | when the §4.4 ship gate passes | All providers in §5, optional parent/teacher controls, accessibility audit, localization (English, Danish, Spanish, plus further EU languages), App Store launch |
+| **4 · v1.0 App Store** | when the §4.4 ship gate passes | All providers in §5, optional parent/teacher controls, accessibility audit, localization (English, Danish, Spanish, German), App Store launch |
 | **5 · Community** | ongoing | Subject packs, MCP tools, classroom sharing, Android/web exploration |
 
 ---
@@ -307,7 +307,7 @@ Built **solo with AI coding agents**, so phases are **scope-gated, not date-gate
 | Team | **Solo + AI coding agents** | Scope-gated roadmap (§8); specs and issues written so agents can execute them |
 | Timeline | **Scope first** | v1.0 ships when the ship gate passes, not on a fixed date |
 | Hosted tier | **None** — BYOK + on-device only | No Omnie servers, no running costs, no accounts |
-| Launch languages | **English, Danish, Spanish + further EU languages** | Which extra EU languages: still open |
+| Launch languages | **English, Danish, Spanish, German** | Localized UI, tutor prompts and eval subsets in all four; more languages via community |
 
 ---
 
