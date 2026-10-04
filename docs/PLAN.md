@@ -1,14 +1,14 @@
 # Omnie Edu — Product & Technical Plan
 
-> **Status:** v0.3 draft · October 2026 (canvas: **tldraw**, with an Excalidraw open-source fallback build)
-> **License:** MIT for all Omnie code. One replaceable dependency, the tldraw SDK, is source-available rather than open source (see [§9](#9-licensing--the-tldraw-decision)).
+> **Status:** v0.4 draft · October 2026 (canvas: **Excalidraw**)
+> **License:** MIT for all Omnie code; every core dependency is OSI-licensed (see [§9](#9-licensing--canvas-decision)).
 > **Platforms:** iPhone, iPad, Mac (one SwiftUI multiplatform codebase)
 
 ---
 
 ## 0. TL;DR
 
-Omnie Edu is an open-source AI learning app, similar to Gauth but built to teach instead of hand over answers. You snap or sketch a problem and **work it out** with a tutor on an infinite **tldraw** canvas. You can **explore** the topic inside generated 3D worlds (World Labs Marble / Atlas) and on an interactive globe. And you can **trust** the result, because every answer goes through a verification engine before you see it.
+Omnie Edu is an open-source AI learning app, similar to Gauth but built to teach instead of hand over answers. You snap or sketch a problem and **work it out** with a tutor on an infinite **Excalidraw** canvas. You can **explore** the topic inside generated 3D worlds (World Labs Marble / Atlas) and on an interactive globe. And you can **trust** the result, because every answer goes through a verification engine before you see it.
 
 Three bets separate Omnie from Gauth and similar apps:
 
@@ -43,7 +43,7 @@ Three bets separate Omnie from Gauth and similar apps:
 | [DeepTutor](https://github.com/HKUDS/DeepTutor) (~30k★) | Apache-2.0 | Solve, Quiz and Research modes, RAG, MCP | Needs a server; no mobile app, no camera OCR |
 | [OATutor](https://github.com/CAHLR/OATutor) | (verify) | Bayesian Knowledge Tracing (a model that estimates which skills a student has mastered), scaffolded hints, OpenStax content | No free-form input, no LLM chat |
 | [Pix2Text](https://github.com/breezedeus/Pix2Text), [LaTeX-OCR](https://github.com/lukas-blecher/LaTeX-OCR) | MIT | Open math OCR | Python; needs a server or a Core ML port |
-| tldraw "Make Real" / agent starter kit | tldraw license | AI that draws on a canvas | A demo kit, not a tutor; no verification, no pedagogy |
+| [Excalidraw](https://github.com/excalidraw/excalidraw) + text-to-diagram | MIT | Mature whiteboard; Mermaid → diagram conversion | A whiteboard, not a tutor; no verification, no pedagogy |
 
 **Conclusion:** there is no credible open-source, native, Gauth-class learning app for Apple platforms. That gap is Omnie's opening.
 
@@ -59,7 +59,7 @@ Three bets separate Omnie from Gauth and similar apps:
 |---|---|
 | One-tap photo capture, handwriting-tolerant OCR | OCR from two engines is compared; if they disagree, the student confirms the parsed problem before anything is solved |
 | Clean step-by-step layout | Steps are canvas cards you can drag, question ("why?") and branch from |
-| Live tutor + whiteboard | The whiteboard is the whole workspace (tldraw), and the AI draws on it |
+| Live tutor + whiteboard | The whiteboard is the whole workspace (Excalidraw), and the AI draws on it |
 | Many subjects and languages | Every subject passes the Truth Engine; subject packs are community-built |
 | Fast answers | Answers unlock after an attempt; "Check my work" finds the first wrong step |
 | Human expert fallback | "Ask a teacher" export: a shareable canvas plus a verification report |
@@ -72,7 +72,7 @@ Three bets separate Omnie from Gauth and similar apps:
 |---|---|
 | The model guesses the answer | **Truth Engine** verifies before display (CAS, cross-vendor check, source check) and shows a confidence badge |
 | Answer first | **Hints first**: Nudge → Hint → Worked step → Full solution, unlocked by attempts |
-| Chat thread or fixed steps | **Infinite canvas** (tldraw): problems, ink, steps, graphs, sources and 3D worlds side by side; the AI draws on it too |
+| Chat thread or fixed steps | **Infinite canvas** (Excalidraw, MIT): problems, ink, steps, graphs, sources and 3D worlds side by side; the AI draws on it too |
 | Flat images | **Explorable worlds**: generate a 3D world (Roman forum, cell interior, volcano) and walk through it; an interactive **atlas/globe** for geography and history |
 | One vendor's model | **BYOK** across ~30 AI providers, ~15 search/reading tools and ~12 verification tools, plus on-device Apple models with no key |
 | Ads, tracking, data sent to analytics | **Local-first**, no ads, no third-party analytics, iCloud sync only, export anytime |
@@ -92,22 +92,22 @@ Three bets separate Omnie from Gauth and similar apps:
 - Every step is a canvas card the student can drag, annotate, question ("why?") or branch from.
 - Voice tutor (on-device speech recognition + Apple or BYOK text-to-speech).
 
-### 3.3 Infinite canvas (tldraw)
-- One canvas per topic or notebook, built on the **tldraw SDK** (v4+), running in a bundled WKWebView.
-- **Custom shapes** (tldraw `ShapeUtil`s, MIT, ours): problem card, step card (with verification badge), live function graph, source card (quote + link), quiz card, flashcard, 3D-world portal, atlas map, code cell.
-- **Bindings** connect steps to the problem and sources to claims, so arrows move with the cards and the verification report can walk the graph.
-- **Omnie Canvas Agent**, based on tldraw's agent starter kit: the tutor draws diagrams, arrows, highlights and annotations through a typed tool interface. Everything the agent writes as fact is routed through the Truth Engine first.
-- **Apple Pencil:** tldraw's pen mode (pressure, palm rejection) is the default on iPad. A native **PencilKit** overlay is kept as a fallback if latency tests (Phase 0) fail; strokes convert to tldraw draw shapes. Handwriting is sent to OCR for math recognition.
+### 3.3 Infinite canvas (Excalidraw)
+- One canvas per topic or notebook, built on **Excalidraw** (MIT: mature, no license key, no watermark, freely forkable), running in a bundled WKWebView.
+- **Omnie learning objects** are Excalidraw **embeddables** rendered by Omnie (MIT, ours) and linked to native data by ID: problem card, step card (with verification badge), live function graph, source card (quote + link), quiz card, flashcard, 3D-world portal, atlas map, code cell.
+- **Arrow bindings** connect steps to the problem and sources to claims, so arrows follow the cards and the verification report can walk the graph.
+- **Omnie Canvas Agent** (ours, MIT): the tutor draws diagrams, arrows, highlights and annotations by emitting Excalidraw elements through a typed tool interface. Mermaid diagrams convert via `@excalidraw/mermaid-to-excalidraw`. Everything the agent writes as fact is routed through the Truth Engine first.
+- **Apple Pencil:** on iPad a native **PencilKit** layer captures handwriting at the lowest latency (pressure, palm rejection, Scribble). Finished strokes convert to Excalidraw freedraw elements, and handwriting is sent to OCR for math recognition.
 - Keyboard and trackpad on Mac.
-- Persistence: tldraw store snapshots in IndexedDB, mirrored to SwiftData and iCloud. No tldraw sync server.
-- **Engine abstraction:** the app talks to a `CanvasEngine` interface, never to tldraw directly. A second implementation on **Excalidraw (MIT)** is kept buildable so a 100% OSI-licensed build always exists (see §9).
+- Persistence: Excalidraw scene JSON in IndexedDB, mirrored to SwiftData and iCloud. No collaboration server.
+- **Engine abstraction:** the app talks to a `CanvasEngine` interface, never to Excalidraw directly, so a custom engine can be added later without touching the rest of the app (see §9).
 
 ### 3.4 Worlds & Atlas ("expressive, visual, exploratory")
 - **Worlds:** generate a 3D Gaussian-splat world (a 3D scene stored as millions of small colored blobs) from a prompt or image with **World Labs**: the Marble API today, and **Atlas** (announced Sept 2026, early access) once its API opens. The student walks through the world, and the tutor pins "learning hotspots" in 3D.
   - Open alternatives behind the same `WorldGenerator` interface: Microsoft TRELLIS (MIT, objects/scenes), NVIDIA Lyra (check the weights license).
   - Rendering: **MetalSplatter** (MIT, native Metal) on device; **Spark.js** (MIT) inside the canvas portal shape; RealityKit `GaussianSplatComponent` on OS 27+.
   - Every generated world is labeled **"Illustrative — AI-generated"**. Facts shown in hotspots go through the Truth Engine like everything else.
-- **Atlas globe:** an interactive globe (MapLibre GL, BSD-3) with Natural Earth (public domain) and NASA imagery for geography, history timelines and climate. MapKit 3D is the native fallback. Map pins can be dropped onto the tldraw canvas as atlas shapes.
+- **Atlas globe:** an interactive globe (MapLibre GL, BSD-3) with Natural Earth (public domain) and NASA imagery for geography, history timelines and climate. MapKit 3D is the native fallback. Map pins can be dropped onto the canvas as atlas cards.
 - ⚠️ *Open question: does "world atlas models" mean World Labs' Atlas, a literal world atlas/globe, or both? This plan covers both.*
 
 ### 3.5 Practice & mastery
@@ -116,7 +116,7 @@ Three bets separate Omnie from Gauth and similar apps:
 
 ### 3.6 Family / classroom (v1.x)
 - Parent and teacher controls: answer-mode policy, provider allow-list, spend caps, age-appropriate models.
-- Share a canvas as a read-only file (`.omnie` = zipped tldraw snapshot + Omnie metadata + assets) or export to PNG/SVG/PDF.
+- Share a canvas as a read-only file (`.omnie` = zipped `.excalidraw` JSON + Omnie metadata + assets), as plain `.excalidraw`, or as PNG/SVG/PDF.
 
 ---
 
@@ -209,21 +209,20 @@ Omnie is also an **MCP client** (MCP = Model Context Protocol, a standard way to
 │   Store/      (SwiftData + CloudKit private DB, Keychain)                              │
 │   Bridge/     (typed, versioned JSON-RPC ↔ WKWebView)                                  │
 ├───────────────────────────── WKWebView (bundled, offline) ─────────────────────────────┤
-│  canvas-web/  React + CanvasEngine ─┬─ tldraw SDK + Omnie shapes + Canvas Agent (default)│
-│                                     └─ Excalidraw + embeddables (open-source build)    │
+│  canvas-web/  React + CanvasEngine ── Excalidraw + Omnie embeddables + Canvas Agent    │
 │               Spark.js splat viewer · MapLibre globe · KaTeX · Pyodide+SymPy worker    │
 └────────────────────────────────────────────────────────────────────────────────────────┘
-          Native only: MetalSplatter / RealityKit world viewer, PencilKit ink fallback
+          Native only: MetalSplatter / RealityKit world viewer, PencilKit ink layer (iPad)
 ```
 
-**Why a native shell + web canvas:** tldraw, Spark.js, MapLibre and Pyodide are web-first and best in class. SwiftUI gives native camera, Pencil, Keychain, iCloud, Apple Intelligence and App Store polish. The bridge is typed and versioned.
+**Why a native shell + web canvas:** Excalidraw, Spark.js, MapLibre and Pyodide are web-first and best in class. SwiftUI gives native camera, Pencil, Keychain, iCloud, Apple Intelligence and App Store polish. The bridge is typed and versioned.
 
 ### Repo layout
 ```
 omnie-edu/
 ├─ apps/apple/            # Xcode multiplatform project (SwiftUI)
 ├─ packages/OmnieKit/     # Swift package: providers, truth engine, pedagogy, store
-├─ canvas-web/            # TypeScript: CanvasEngine, tldraw shapes + agent, Excalidraw fallback, viewers
+├─ canvas-web/            # TypeScript: CanvasEngine, Excalidraw embeddables + agent, viewers
 ├─ providers/             # providers.json registry
 ├─ evals/                 # correctness benchmarks + regression cases
 ├─ subject-packs/         # community prompts, curricula, practice templates
@@ -246,7 +245,7 @@ omnie-edu/
 
 | Phase | Timing (target) | Deliverables |
 |---|---|---|
-| **0 · Foundations** | Oct–Nov 2026 | Repo, CI, `OmnieKit` skeleton, provider registry, Keychain BYOK. **tldraw spike in WKWebView**: license-key behaviour when loading from a custom URL scheme, Pencil latency vs PencilKit, custom-shape performance. Excalidraw build kept compiling. Pyodide + SymPy spike. Contact tldraw about licensing (§9). |
+| **0 · Foundations** | Oct–Nov 2026 | Repo, CI, `OmnieKit` skeleton, provider registry, Keychain BYOK. **Excalidraw + PencilKit spike in WKWebView**: Pencil → freedraw latency, embeddable performance with many cards, scene size limits. Pyodide + SymPy spike. |
 | **1 · MVP "Snap → Learn → Verify"** | Dec 2026–Feb 2027 | Camera + OCR, hints-first tutor, Truth Engine v1 (CAS + self-consistency + cross-vendor), canvas notebooks with Omnie shapes, 5 providers (Anthropic, OpenAI, Gemini, OpenRouter, Apple FM), TestFlight |
 | **2 · Grounded knowledge** | Mar–Apr 2027 | Search BYOK (Brave, Exa, Tavily, Perplexity, SearXNG), claim splitting, citation verifier, Verification Report UI, evals CI + public scoreboard, Canvas Agent |
 | **3 · Explore** | May–Jul 2027 | Worlds (World Labs Marble → Atlas), MetalSplatter viewer, atlas globe, practice + mastery map, voice tutor |
@@ -255,20 +254,13 @@ omnie-edu/
 
 ---
 
-## 9. Licensing & the tldraw decision
+## 9. Licensing & canvas decision
 
-- **Omnie Edu code: MIT.** This includes every Omnie shape, the Canvas Agent, OmnieKit and the app.
-- **Canvas decision (Oct 2026): tldraw.** It is the best infinite canvas available: custom shapes and bindings, an agent starter kit for AI drawing, strong Pencil support and an active team.
-- **The catch, stated plainly:** since SDK 4.0 (Sept 2025) tldraw ships under the *tldraw license*. Its source is public, but by tldraw's own description it is "not Open Source by any definition". Development needs no key; production builds need one:
-  - **Hobby license** (free, non-commercial, must be requested): keeps the "made with tldraw" watermark. Omnie is free and non-commercial, so this may fit, but this must be confirmed with tldraw for App Store distribution.
-  - **Commercial license** (paid, no watermark): needed if Omnie is ever published by a company or monetized.
-  - **Every fork needs its own key.**
-- **How Omnie stays fully open source anyway:**
-  1. tldraw is reached only through the `CanvasEngine` interface. Omnie's shapes are defined in an engine-neutral schema and rendered by an adapter per engine.
-  2. An **Excalidraw (MIT) build flavor** (`OMNIE_CANVAS=excalidraw`) is kept compiling in CI, so anyone can build and ship a 100% OSI-licensed Omnie without a key.
-  3. tldraw is listed as a non-OSI dependency in [`THIRD_PARTY_LICENSES.md`](../THIRD_PARTY_LICENSES.md).
-  4. Phase 0 action: ask tldraw (a) whether a free license is available for a free, open-source education app, and (b) how domain-bound keys behave in a WKWebView loaded from a custom URL scheme.
-- Alternatives considered: Excalidraw (MIT, kept as the fallback), Quickdraw (MIT, promising but very young), Drawnix/Plait (MIT, strong for mind maps), BlockSuite (MPL-2.0, early stage), perfect-freehand + Konva/PixiJS (build our own), PencilKit (native ink only).
+- **Omnie Edu code: MIT.** This includes every Omnie embeddable, the Canvas Agent, OmnieKit and the app.
+- **Canvas decision (Oct 2026): Excalidraw (MIT).** Mature, widely used, no license key or watermark, and anyone can fork and ship it. That keeps Omnie fully open source with every core dependency OSI-licensed.
+- **tldraw was dropped.** Since SDK 4.0 (Sept 2025) it ships under the source-available *tldraw license* ("not Open Source by any definition", in tldraw's words): production builds need a license key, the free hobby key is non-commercial with a "made with tldraw" watermark, and every fork would need its own key. That conflicts with a freely forkable open-source app.
+- The canvas stays behind a `CanvasEngine` interface, and Omnie's learning objects use an engine-neutral schema, so the engine can be swapped later if Excalidraw hits limits.
+- Alternatives considered: tldraw (dropped, see above), Quickdraw (MIT, promising but very young), Drawnix/Plait (MIT, strong for mind maps), BlockSuite (MPL-2.0, early stage), perfect-freehand + Konva/PixiJS (build our own), PencilKit (native ink only).
 - Avoid GPL components in App Store builds (Giac/Maxima); avoid non-commercial model weights (Nougat, Apple SHARP); avoid region-restricted licenses (Tencent HunyuanWorld excludes the EU). Omnie is distributed from Denmark.
 - World Labs output: check the Marble/Atlas terms for redistribution of generated worlds.
 
@@ -278,8 +270,8 @@ omnie-edu/
 
 | Risk | Mitigation |
 |---|---|
-| tldraw license blocks free distribution, or the watermark is unacceptable | Talk to tldraw in Phase 0; Excalidraw build flavor ready in CI; engine-neutral shape schema |
-| tldraw key fails inside WKWebView (custom scheme / no domain) | Phase 0 spike; serve the canvas from a local `https`-style scheme handler if needed; ask tldraw |
+| Excalidraw limits for rich custom cards or AI drawing | Embeddables + `CanvasEngine` abstraction + engine-neutral schema; long-term option of an Omnie engine on perfect-freehand + Konva/PixiJS (all MIT) |
+| Pencil latency through the WebView | Native PencilKit layer captures ink; only finished strokes go to Excalidraw |
 | World Labs Atlas API not public, or pricey (~$0.12–1.70 per world on Marble) | Marble today, cache worlds, curated shared world library, open TRELLIS fallback |
 | BYOK friction for students | On-device Apple model with no key; guided setup; OpenRouter "one key for many models" path |
 | App Review (works without a key, AI data disclosure) | No-key on-device mode; demo notes; consent screens |
@@ -302,9 +294,8 @@ omnie-edu/
 
 1. "World atlas models": World Labs **Atlas**, a literal **world atlas/globe**, or both? (Plan assumes both.)
 2. Target age range at launch (13+? K-12 with parental controls?). This affects the App Store age rating and COPPA/GDPR-K.
-3. Which entity publishes the app (personal or company)? This decides hobby vs commercial tldraw license, the App Store account and World Labs terms.
-4. Is the "made with tldraw" watermark acceptable in v1, or should we budget for a commercial license?
-5. Offer an optional hosted "no-key" tier later, or stay strictly BYOK + on-device?
+3. Which entity publishes the app (personal or company)? This decides the App Store account and World Labs terms.
+4. Offer an optional hosted "no-key" tier later, or stay strictly BYOK + on-device?
 
 ---
 
@@ -312,8 +303,8 @@ omnie-edu/
 - Gauth & alternatives: [App Store](https://apps.apple.com/us/app/gauth-ai-%ED%95%99%EC%8A%B5-%EB%8F%99%EB%B0%98%EC%9E%90/id1542571008?l=en-US) · [Implicator](https://www.implicator.ai/bytedances-homework-app-gauthmath-quietly-conquers-american-classrooms/) · [Courthouse News (class action)](https://courthousenews.com/articles/tiktoks-us-entity-faces-class-action-over-ai-homework-helper) · [Pillitteri review](https://pasqualepillitteri.it/en/news/1281/gauth-ai-review-bytedance-homework-app) · [Nibble: Gauth alternatives](https://nibble-app.com/blog/gauth-alternatives) · [Blaze: Gauth alternatives](https://blaze.today/blog/gauth-ai-alternatives/)
 - Study modes compared: [Glasp](https://glasp.co/articles/ai-study-modes-compared) · Microsoft Math Solver retirement: [Wikipedia](https://en.wikipedia.org/wiki/Microsoft_Math_Solver)
 - Pedagogy: [Bastani et al. (Wharton)](https://knowledge.wharton.upenn.edu/article/without-guardrails-generative-ai-can-harm-education) · [Kestin et al. (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC12179260/)
-- tldraw: [license](https://tldraw.dev/legal/tldraw-license) · [license key](https://tldraw.dev/sdk-features/license-key) · [hobby license](https://tldraw.dev/get-a-license/hobby) · [license update for the SDK](https://tldraw.dev/blog/license-update-for-the-tldraw-sdk) · [20 things AI chatbots should know about tldraw](https://tldraw.dev/blog/20-things-i-wish-ai-chatbots-knew-about-tldraw) · [pricing](https://tldraw.dev/pricing) · [starter kits](https://tldraw.dev/starter-kits/overview) · [Pencil/touch notes](https://tldraw.dev/blog/a-touchy-subject)
-- Canvas alternatives: [Excalidraw](https://github.com/excalidraw/excalidraw) · [PencilKit](https://developer.apple.com/documentation/pencilkit) · [Quickdraw: open-source tldraw alternatives](https://tryquickdraw.com/blog/open-source-tldraw-alternatives)
+- Canvas: [Excalidraw](https://github.com/excalidraw/excalidraw) · [mermaid-to-excalidraw](https://github.com/excalidraw/mermaid-to-excalidraw) · [PencilKit](https://developer.apple.com/documentation/pencilkit) · [Quickdraw: open-source tldraw alternatives](https://tryquickdraw.com/blog/open-source-tldraw-alternatives)
+- tldraw (dropped): [license](https://tldraw.dev/legal/tldraw-license) · [license update for the SDK](https://tldraw.dev/blog/license-update-for-the-tldraw-sdk) · [hobby license](https://tldraw.dev/get-a-license/hobby)
 - World Labs Atlas: [SiliconANGLE](https://siliconangle.com/2026/09/01/fei-fei-lis-world-labs-debuts-atlas-a-world-model-showcase-for-advanced-spatial-intelligence/) · [Radiance Fields](https://radiancefields.com/world-labs-announces-new-world-model-atlas) · [Marble API pricing](https://docs.worldlabs.ai/api/pricing)
 - Rendering: [MetalSplatter](https://github.com/scier/MetalSplatter) · [Spark.js](https://github.com/sparkjsdev/spark) · [RealityKit GaussianSplatComponent](https://developer.apple.com/documentation/realitykit/gaussiansplatcomponent)
 - Providers & search: [Anthropic OpenAI-SDK compat](https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/openai-sdk) · [Gemini OpenAI compat](https://ai.google.dev/gemini-api/docs/openai) · [Bing API retirement](https://learn.microsoft.com/en-us/lifecycle/announcements/bing-search-api-retirement) · [Google CSE shutdown](https://brave.com/learn/google-api-shutdown/) · [Exa pricing](https://exa.ai/docs/changelog/pricing-update) · [Wolfram|Alpha APIs](https://products.wolframalpha.com/api)
