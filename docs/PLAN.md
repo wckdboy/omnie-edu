@@ -1,8 +1,9 @@
 # Omnie Edu — Product & Technical Plan
 
-> **Status:** v0.4 draft · October 2026 (canvas: **Excalidraw**)
+> **Status:** v0.5 draft · October 2026 (canvas: **Excalidraw**)
 > **License:** MIT for all Omnie code; every core dependency is OSI-licensed (see [§9](#9-licensing--canvas-decision)).
-> **Platforms:** iPhone, iPad, Mac (one SwiftUI multiplatform codebase)
+> **Platforms:** iPhone, iPad, Mac (one SwiftUI multiplatform codebase) · minimum iOS / iPadOS / macOS 26
+> **Audience:** students 13+ · **Publisher:** personal Apple developer account (Denmark) · decisions in [§12](#12-decisions)
 
 ---
 
@@ -108,14 +109,14 @@ Three bets separate Omnie from Gauth and similar apps:
   - Rendering: **MetalSplatter** (MIT, native Metal) on device; **Spark.js** (MIT) inside the canvas portal shape; RealityKit `GaussianSplatComponent` on OS 27+.
   - Every generated world is labeled **"Illustrative — AI-generated"**. Facts shown in hotspots go through the Truth Engine like everything else.
 - **Atlas globe:** an interactive globe (MapLibre GL, BSD-3) with Natural Earth (public domain) and NASA imagery for geography, history timelines and climate. MapKit 3D is the native fallback. Map pins can be dropped onto the canvas as atlas cards.
-- ⚠️ *Open question: does "world atlas models" mean World Labs' Atlas, a literal world atlas/globe, or both? This plan covers both.*
+- *Decided: "world atlas models" means both — World Labs worlds and the atlas globe ship in v1.*
 
 ### 3.5 Practice & mastery
 - Auto-generated practice sets with CAS-verified answers, spaced-repetition flashcards, and a per-skill mastery map (Bayesian Knowledge Tracing, as in OATutor).
 - "Exam mode" with no hints, then a review on the canvas.
 
 ### 3.6 Family / classroom (v1.x)
-- Parent and teacher controls: answer-mode policy, provider allow-list, spend caps, age-appropriate models.
+- Parent and teacher controls (optional, since v1 is 13+): answer-mode policy, provider allow-list, spend caps, age-appropriate models.
 - Share a canvas as a read-only file (`.omnie` = zipped `.excalidraw` JSON + Omnie metadata + assets), as plain `.excalidraw`, or as PNG/SVG/PDF.
 
 ---
@@ -172,7 +173,7 @@ Keys live in the **Keychain** (`kSecAttrSynchronizable` for iCloud Keychain sync
 | **OpenAI-compatible** (custom base URL) | OpenAI, xAI (Grok), Mistral, DeepSeek, Qwen (Alibaba DashScope), Moonshot (Kimi), Zhipu (GLM), MiniMax, Meta Llama API, Groq, Cerebras, SambaNova, Together, Fireworks, DeepInfra, Hugging Face Inference, NVIDIA NIM, OpenRouter, Perplexity Sonar, Azure OpenAI (v1), Amazon Bedrock (OpenAI-compatible endpoint), Ollama, LM Studio, any custom endpoint |
 | **Anthropic native** | Claude (Messages API: citations, PDFs, prompt caching, extended thinking) |
 | **Gemini native** | Google Gemini (Search grounding, long context, video), Vertex AI (advanced) |
-| **On-device** | Apple Foundation Models (no key; Private Cloud Compute on OS 27), MLX local models |
+| **On-device** | Apple Foundation Models (no key; available on OS 26+, Private Cloud Compute on OS 27 when present), MLX local models |
 
 Also: Cohere (native adapter, strong for reranking and grounded answers).
 
@@ -235,7 +236,9 @@ omnie-edu/
 
 - Local-first. Sync uses the iCloud private database only. No accounts, no analytics SDKs, no ads.
 - A per-provider consent screen before any data leaves the device (App Store guideline 5.1.2(i), Nov 2025), plus an accurate privacy nutrition label.
-- Student mode: age-appropriate system prompts, content filters, parent PIN for Answer mode and provider changes.
+- Audience is 13+ (App Store age rating 13+; under-13 use is not supported in v1, so no COPPA verifiable-consent flow). In the EU, users under the national digital-consent age (13–16 depending on country; 13 in Denmark) see a parental-consent notice before any provider is enabled.
+- Student mode: age-appropriate system prompts, content filters, optional parent PIN for Answer mode and provider changes.
+- No hosted tier, ever: Omnie runs no servers and never pays for or relays AI calls.
 - Generated media is labeled; no face or likeness generation of real people.
 - Security: keys only in the Keychain; no keys in logs; dependency audits in CI; reproducible builds.
 
@@ -243,13 +246,15 @@ omnie-edu/
 
 ## 8. Roadmap
 
-| Phase | Timing (target) | Deliverables |
+Built **solo with AI coding agents**, so phases are **scope-gated, not date-gated**: a phase ends when its exit criteria pass, not on a date. Rough estimates are given for planning only.
+
+| Phase | Estimate | Deliverables |
 |---|---|---|
-| **0 · Foundations** | Oct–Nov 2026 | Repo, CI, `OmnieKit` skeleton, provider registry, Keychain BYOK. **Excalidraw + PencilKit spike in WKWebView**: Pencil → freedraw latency, embeddable performance with many cards, scene size limits. Pyodide + SymPy spike. |
-| **1 · MVP "Snap → Learn → Verify"** | Dec 2026–Feb 2027 | Camera + OCR, hints-first tutor, Truth Engine v1 (CAS + self-consistency + cross-vendor), canvas notebooks with Omnie shapes, 5 providers (Anthropic, OpenAI, Gemini, OpenRouter, Apple FM), TestFlight |
-| **2 · Grounded knowledge** | Mar–Apr 2027 | Search BYOK (Brave, Exa, Tavily, Perplexity, SearXNG), claim splitting, citation verifier, Verification Report UI, evals CI + public scoreboard, Canvas Agent |
-| **3 · Explore** | May–Jul 2027 | Worlds (World Labs Marble → Atlas), MetalSplatter viewer, atlas globe, practice + mastery map, voice tutor |
-| **4 · v1.0 App Store** | Aug–Sep 2027 (back to school) | All providers in §5, parent/teacher controls, accessibility audit, localization (EN, DA, ES, …), App Store launch |
+| **0 · Foundations** | ~6–8 weeks | Repo, CI, `OmnieKit` skeleton, provider registry, Keychain BYOK. **Excalidraw + PencilKit spike in WKWebView**: Pencil → freedraw latency, embeddable performance with many cards, scene size limits. Pyodide + SymPy spike. |
+| **1 · MVP "Snap → Learn → Verify"** | ~3 months | Camera + OCR, hints-first tutor, Truth Engine v1 (CAS + self-consistency + cross-vendor), canvas notebooks with Omnie shapes, 5 providers (Anthropic, OpenAI, Gemini, OpenRouter, Apple FM), TestFlight |
+| **2 · Grounded knowledge** | ~2 months | Search BYOK (Brave, Exa, Tavily, Perplexity, SearXNG), claim splitting, citation verifier, Verification Report UI, evals CI + public scoreboard, Canvas Agent |
+| **3 · Explore** | ~3 months | Worlds (World Labs Marble → Atlas), MetalSplatter viewer, atlas globe, practice + mastery map, voice tutor |
+| **4 · v1.0 App Store** | when the §4.4 ship gate passes | All providers in §5, optional parent/teacher controls, accessibility audit, localization (English, Danish, Spanish, plus further EU languages), App Store launch |
 | **5 · Community** | ongoing | Subject packs, MCP tools, classroom sharing, Android/web exploration |
 
 ---
@@ -277,6 +282,7 @@ omnie-edu/
 | App Review (works without a key, AI data disclosure) | No-key on-device mode; demo notes; consent screens |
 | Wrong answers despite verification | Abstain policy, public evals, regression set from user reports, "Verified" badge only when CAS/source checks actually passed |
 | Search API shutdowns (Bing, Google CSE) | Many interchangeable search providers + self-hosted SearXNG |
+| Solo developer: bus factor and burnout | Scope-gated roadmap; open repo from day one; small, well-specified issues that agents or contributors can pick up; evals in CI catch regressions |
 | Academic integrity concerns | Hints-first default, Answer-mode policy, "Check my work" as the hero feature |
 
 ---
@@ -290,12 +296,18 @@ omnie-edu/
 
 ---
 
-## 12. Open questions for the owner
+## 12. Decisions
 
-1. "World atlas models": World Labs **Atlas**, a literal **world atlas/globe**, or both? (Plan assumes both.)
-2. Target age range at launch (13+? K-12 with parental controls?). This affects the App Store age rating and COPPA/GDPR-K.
-3. Which entity publishes the app (personal or company)? This decides the App Store account and World Labs terms.
-4. Offer an optional hosted "no-key" tier later, or stay strictly BYOK + on-device?
+| Topic | Decision (Oct 2026) | Consequence |
+|---|---|---|
+| Audience | **13+** | App Store rating 13+; no COPPA consent flow; parental controls optional; EU digital-consent notice (§7) |
+| Publisher | **Personal Apple developer account** (Denmark) | Owner's name shown as seller; World Labs and provider terms accepted personally; can move to an org later via App Store app transfer |
+| "World atlas models" | **Both**: World Labs worlds (Marble → Atlas) + atlas globe | Both in Phase 3 |
+| Minimum OS | **iOS / iPadOS / macOS 26** | On-device Apple models available everywhere; RealityKit splats and Private Cloud Compute used on OS 27 with MetalSplatter / on-device fallbacks on 26 |
+| Team | **Solo + AI coding agents** | Scope-gated roadmap (§8); specs and issues written so agents can execute them |
+| Timeline | **Scope first** | v1.0 ships when the ship gate passes, not on a fixed date |
+| Hosted tier | **None** — BYOK + on-device only | No Omnie servers, no running costs, no accounts |
+| Launch languages | **English, Danish, Spanish + further EU languages** | Which extra EU languages: still open |
 
 ---
 
