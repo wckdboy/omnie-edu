@@ -7,3 +7,10 @@ The infinite canvas, bundled into the app and loaded in WKWebView.
 - Spark.js splat viewer, MapLibre globe, KaTeX, Pyodide + SymPy worker
 
 See docs/PLAN.md §3.3 and §9.
+
+## Develop
+```sh
+npm ci
+npm run typecheck
+npm test   # verdict fixtures + Swift/TypeScript bridge parity
+```

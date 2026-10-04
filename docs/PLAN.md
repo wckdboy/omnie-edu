@@ -165,7 +165,7 @@ Three bets separate Omnie from Gauth and similar apps:
 
 ## 5. BYOK — providers & tools
 
-Keys live in the **Keychain** (`kSecAttrSynchronizable` for iCloud Keychain sync, optional Face ID gate). There is no Omnie server and no proxy: requests go straight from the device to the provider. Keys are passed into the WebView only per request over the native bridge and are never stored in web storage. The provider list is a JSON registry ([`providers/providers.json`](../providers/providers.json)), so the community can add endpoints without code changes. All base URLs must be checked against vendor docs before release.
+Keys live in the **Keychain** (`kSecAttrSynchronizable` for iCloud Keychain sync, optional Face ID gate). There is no Omnie server and no proxy: requests go straight from the device to the provider. **Keys never enter the canvas WebView**: every provider, search and verification call is made natively, and the canvas only receives results. The provider list is a JSON registry ([`providers/providers.json`](../providers/providers.json)), so the community can add endpoints without code changes. All base URLs must be checked against vendor docs before release.
 
 ### 5.1 AI models (4 adapters cover nearly everything)
 | Adapter | Providers |
@@ -218,6 +218,8 @@ Omnie is also an **MCP client** (MCP = Model Context Protocol, a standard way to
 
 **Why a native shell + web canvas:** Excalidraw, Spark.js, MapLibre and Pyodide are web-first and best in class. SwiftUI gives native camera, Pencil, Keychain, iCloud, Apple Intelligence and App Store polish. The bridge is typed and versioned.
 
+**Contracts:** the canvas engine, the bridge, the data model and the verdict format are specified in [`docs/specs/`](specs/README.md), with code stubs and tests that keep the Swift and TypeScript sides in sync.
+
 ### Repo layout
 ```
 omnie-edu/
@@ -250,7 +252,7 @@ Built **solo with AI coding agents**, so phases are **scope-gated, not date-gate
 
 | Phase | Estimate | Deliverables |
 |---|---|---|
-| **0 · Foundations** | ~6–8 weeks | Repo, CI, `OmnieKit` skeleton, provider registry, Keychain BYOK. **Excalidraw + PencilKit spike in WKWebView**: Pencil → freedraw latency, embeddable performance with many cards, scene size limits. Pyodide + SymPy spike. |
+| **0 · Foundations** ([backlog](PHASE0.md)) | ~6–8 weeks | Repo, CI, `OmnieKit` skeleton, provider registry, Keychain BYOK. **Excalidraw + PencilKit spike in WKWebView**: Pencil → freedraw latency, embeddable performance with many cards, scene size limits. Pyodide + SymPy spike. |
 | **1 · MVP "Snap → Learn → Verify"** | ~3 months | Camera + OCR, hints-first tutor, Truth Engine v1 (CAS + self-consistency + cross-vendor), canvas notebooks with Omnie shapes, 5 providers (Anthropic, OpenAI, Gemini, OpenRouter, Apple FM), TestFlight |
 | **2 · Grounded knowledge** | ~2 months | Search BYOK (Brave, Exa, Tavily, Perplexity, SearXNG), claim splitting, citation verifier, Verification Report UI, evals CI + public scoreboard, Canvas Agent |
 | **3 · Explore** | ~3 months | Worlds (World Labs Marble → Atlas), MetalSplatter viewer, atlas globe, practice + mastery map, voice tutor |
