@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-05T10:00:00Z",
+  "claims": [],
+  "sources": [],
+  "status": "disagreement",
+  "level": "strict",
+  "domain": "math",
+  "answer": {
+    "text": "12"
+  },
+  "checks": [
+    {
+      "kind": "cas",
+      "outcome": "skipped",
+      "detail": "Word problem could not be formalized",
+      "durationMs": 120
+    },
+    {
+      "kind": "self_consistency",
+      "outcome": "fail",
+      "detail": "2/3 samples agree",
+      "durationMs": 2600,
+      "by": {
+        "provider": "anthropic",
+        "model": "claude-x"
+      }
+    },
+    {
+      "kind": "cross_vendor",
+      "outcome": "fail",
+      "detail": "Judge gets 14: step 2 miscounts the boxes",
+      "durationMs": 3100,
+      "by": {
+        "provider": "openai",
+        "model": "gpt-x"
+      }
+    }
+  ],
+  "alternatives": [
+    {
+      "answer": {
+        "text": "12"
+      },
+      "by": [
+        {
+          "provider": "anthropic",
+          "model": "claude-x"
+        }
+      ]
+    },
+    {
+      "answer": {
+        "text": "14"
+      },
+      "by": [
+        {
+          "provider": "openai",
+          "model": "gpt-x"
+        }
+      ]
+    }
+  ]
+}

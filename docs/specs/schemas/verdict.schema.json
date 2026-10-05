@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/wckdboy/omnie-edu/docs/specs/schemas/verdict.schema.json",
+  "title": "Omnie Verdict",
+  "description": "Verification result attached to every answer. See docs/specs/verdict.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "level", "domain", "checks", "claims", "sources", "createdAt"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "status": { "enum": ["verified", "partial", "disagreement", "abstain"] },
+    "level": { "enum": ["fast", "standard", "strict"] },
+    "domain": { "enum": ["math", "science", "factual", "code"] },
+    "answer": { "$ref": "#/$defs/answer" },
+    "checks": { "type": "array", "items": { "$ref": "#/$defs/check" } },
+    "claims": { "type": "array", "items": { "$ref": "#/$defs/claim" } },
+    "sources": { "type": "array", "items": { "$ref": "#/$defs/source" } },
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["answer", "by"],
+        "properties": {
+          "answer": { "$ref": "#/$defs/answer" },
+          "by": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/modelRef" } }
+        }
+      }
+    },
+    "firstWrongStep": { "type": "integer", "minimum": 1 },
+    "createdAt": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "answer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text"],
+      "properties": { "text": { "type": "string", "minLength": 1 }, "latex": { "type": "string" } }
+    },
+    "modelRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model"],
+      "properties": { "provider": { "type": "string" }, "model": { "type": "string" } }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "outcome", "detail", "durationMs"],
+      "properties": {
+        "kind": {
+          "enum": ["cas", "numeric_spot", "self_consistency", "cross_vendor", "retrieval", "citation", "units", "factcheck", "sandbox"]
+        },
+        "outcome": { "enum": ["pass", "fail", "skipped", "error"] },
+        "by": { "$ref": "#/$defs/modelRef" },
+        "detail": { "type": "string" },
+        "durationMs": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text", "support", "sourceIds"],
+      "properties": {
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "support": { "enum": ["supported", "unsupported", "contradicted"] },
+        "sourceIds": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "url", "quote", "quoteFound", "fetchedAt"],
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "url": { "type": "string", "format": "uri" },
+        "doi": { "type": "string" },
+        "quote": { "type": "string" },
+        "quoteFound": { "type": "boolean" },
+        "fetchedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

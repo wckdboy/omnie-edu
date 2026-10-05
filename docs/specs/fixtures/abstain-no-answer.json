@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-05T10:00:00Z",
+  "claims": [],
+  "sources": [],
+  "status": "abstain",
+  "level": "standard",
+  "domain": "science",
+  "checks": [
+    {
+      "kind": "units",
+      "outcome": "fail",
+      "detail": "Answer in m/s² but question asks for N",
+      "durationMs": 120
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-05T10:00:00Z",
+  "claims": [],
+  "sources": [],
+  "status": "verified",
+  "level": "standard",
+  "domain": "math",
+  "answer": {
+    "text": "x = 2 or x = -2",
+    "latex": "x = \\pm 2"
+  },
+  "checks": [
+    {
+      "kind": "cas",
+      "outcome": "pass",
+      "detail": "solve(x**2 - 4, x) == [-2, 2]",
+      "durationMs": 310
+    },
+    {
+      "kind": "numeric_spot",
+      "outcome": "pass",
+      "detail": "Substituted both roots back: residual 0",
+      "durationMs": 120
+    },
+    {
+      "kind": "self_consistency",
+      "outcome": "pass",
+      "detail": "3/3 samples agree",
+      "durationMs": 2400,
+      "by": {
+        "provider": "anthropic",
+        "model": "claude-x"
+      }
+    }
+  ]
+}

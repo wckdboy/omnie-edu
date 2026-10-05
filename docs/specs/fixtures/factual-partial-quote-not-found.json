@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-05T10:00:00Z",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Paris is the capital of France.",
+      "support": "supported",
+      "sourceIds": [
+        "s1"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "s1",
+      "title": "Source 1",
+      "url": "https://example.org/source-1",
+      "quote": "Paris is the capital of France.",
+      "quoteFound": false,
+      "fetchedAt": "2026-10-05T10:00:00Z"
+    }
+  ],
+  "status": "partial",
+  "level": "standard",
+  "domain": "factual",
+  "answer": {
+    "text": "Paris is the capital of France."
+  },
+  "checks": [
+    {
+      "kind": "retrieval",
+      "outcome": "pass",
+      "detail": "1 source found",
+      "durationMs": 900
+    },
+    {
+      "kind": "citation",
+      "outcome": "pass",
+      "detail": "Page fetched",
+      "durationMs": 700
+    }
+  ]
+}

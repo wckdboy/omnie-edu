@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-05T10:00:00Z",
+  "claims": [],
+  "sources": [],
+  "status": "verified",
+  "level": "standard",
+  "domain": "math",
+  "answer": {
+    "text": "x = 5"
+  },
+  "checks": [
+    {
+      "kind": "cas",
+      "outcome": "pass",
+      "detail": "Correct solution x = 5; student's step 2 gives 2x = 6, expected 2x = 10",
+      "durationMs": 120
+    },
+    {
+      "kind": "numeric_spot",
+      "outcome": "pass",
+      "detail": "x = 5 satisfies 2x + 3 = 13",
+      "durationMs": 120
+    },
+    {
+      "kind": "self_consistency",
+      "outcome": "pass",
+      "detail": "3/3 samples agree",
+      "durationMs": 1900,
+      "by": {
+        "provider": "anthropic",
+        "model": "claude-x"
+      }
+    }
+  ],
+  "firstWrongStep": 2
+}
